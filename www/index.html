@@ -1,0 +1,832 @@
+<html ng-app="ionicApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width,">
+    <title>Side Menus</title>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <link href="lib/ionic/css/ionic.min.css" rel="stylesheet">
+    <script src="lib/ionic/js/ionic.bundle.min.js"></script>
+    <script src="js/ng-cordova.min.js"></script>
+    <script src="cordova.js"></script>
+    <script src="js/angular-ios9-uiwebview.patch.js"></script>
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body class="platform-ios" ng-controller="MainCtrl">
+<ion-nav-bar class="header-bar">
+  <ion-nav-back-button class="button-icon ion-arrow-left-c back-button">
+  </ion-nav-back-button>
+</ion-nav-bar>
+         
+<ion-nav-view></ion-nav-view>
+
+<script id="sign-in.html" type="text/ng-template">
+  <ion-view view-title="Sign-In">
+	<ion-content>
+	<p class="text-center" style="margin-top:10px;">
+	  <img src="images/logo.png" height="120px;" width="120px;">
+	</p>
+	<div class="list" style="margin-top:10px;">
+		<label class="item item-input">
+		  <span class="input-label">Username</span>
+		  <input type="text" ng-model="user.username">
+		</label>
+		<label class="item item-input">
+		  <span class="input-label">Password</span>
+		  <input type="password" ng-model="user.password">
+		</label>
+	</div>
+	<ul class="list">
+			<li class="item-checkbox">
+				 <label class="checkbox">
+				   <input type="checkbox" ng-model="user.remember">
+				 </label>
+			 Remember me
+			</li>
+	</ul>
+	<div>
+		<button class="button button-block login-button" ng-click="signIn(user)">
+		  Sign-In
+		</button>
+		<p class="text-center">
+		  <a href="#/forgot-password" style="text-decoration:none; color:#000">Forgot password?</a>
+		</p>
+		<hr style="width:75%">
+		<center><p><a href="#/signup" style="text-decoration:none; color:#000">Don't have an account? Sign Up Here</a><span style="display:none">'</span></p></center>
+	</div>
+	</ion-content>
+  </ion-view>
+</script>
+
+<script id="forgot-password.html" type="text/ng-template">
+  <ion-view view-title="Forgot Password">
+	<ion-content>
+	<div class="padding">
+		<center><b>Can't sign in? Forgot your password?</b></center>
+		<hr style="width:75%">
+		<p>Enter your registered email address. we'll send you password reset instructions.</p>
+	</div>
+	  <p>
+	   	<div class="list" style="margin-top:10px;">
+		<label class="item item-input">
+		  <span class="input-label">Email</span>
+		  <input type="text" ng-model="user.email">
+		</label>
+		</div>
+		<div>
+		<button class="button button-block login-button" ng-click="forget(user)">
+		  Send me reset instructions
+		</button>
+		</div>
+	  </p>
+	</ion-content>
+  </ion-view>
+</script>
+
+<script id="signup.html" type="text/ng-template">
+  <ion-view view-title="Account Setup">
+	<ion-content>
+	<div class="padding">
+		<center><b>Create your account</b></center>
+		<hr style="width:75%">
+		<center>This is step 1.</center>
+	</div>
+	<ul class="list">
+		<label class="item item-input item-floating-label">
+			<span class="input-label" style="font-size:14px;">Thermostat Name</span>
+			<input type="text" placeholder="Enter Thermostat Name" ng-model="user.thermostatname">
+		</label>
+		<label class="item item-input item-floating-label">
+			<span class="input-label" style="font-size:14px;">Thermostat ID</span>
+			<input type="text" placeholder="Enter Thermostat ID" ng-model="user.thermostatid">
+		</label>
+		<label class="item item-input item-floating-label">
+			<span class="input-label" style="font-size:14px;">Location</span>
+			<input type="text" placeholder="Enter Location" ng-model="user.locationname">
+		</label>
+		<div>
+		<a href="" ng-click="firstvalidation(user)" class="button icon-right ion-chevron-right login-button"  style="margin-top:10px;">Next</a>
+	</ul>
+	</ion-content>
+  </ion-view>
+</script>
+
+<script id="signup2.html" type="text/ng-template">
+  <ion-view view-title="Account Information">
+	<ion-content>
+	<div class="padding">
+		<center><b>Your login details</b></center>
+		<hr style="width:75%">
+		<center>This is step 2.</center>
+	</div>
+	<ul class="list">
+		<label class="item item-input item-floating-label">
+			<span class="input-label" style="font-size:14px;">Username</span>
+			<input type="text" placeholder="Username" ng-model="user.username">
+		</label>
+		<label class="item item-input item-floating-label">
+			<span class="input-label" style="font-size:14px;">Email</span>
+			<input type="text" placeholder="Email" ng-model="user.email">
+		</label>
+		<label class="item item-input item-floating-label">
+			<span class="input-label" style="font-size:14px;">Password</span>
+			<input type="password" placeholder="Password" ng-model="user.password">
+		</label>
+		<label class="item item-input item-floating-label">
+			<span class="input-label" style="font-size:14px;">Confirm Password</span>
+			<input type="password" placeholder="Confirm Password" ng-model="user.cpassword">
+		</label>
+		<div>
+		<a href="" ng-click="secondvalidation(user)"  class="button icon-right ion-chevron-right login-button"  style="margin-top:10px;">Next</a>
+	</ul>
+	</ion-content>
+  </ion-view>
+</script>
+
+<script id="signup3.html" type="text/ng-template">
+  <ion-view view-title="Personal Details">
+	<ion-content>
+	<div class="padding">
+		<center><b>We will never sell it</b></center>
+		<hr style="width:75%">
+		<center>This is step 3.</center>
+	</div>
+	<ul class="list">
+		<label class="item item-input item-floating-label">
+			<span class="input-label" style="font-size:14px;">Company Name</span>
+			<input type="text" placeholder="Company Name" ng-model="user.companyname">
+		</label>
+		<label class="item item-input item-floating-label">
+			<span class="input-label" style="font-size:14px;">Phone</span>
+			<input type="text" placeholder="Phone" ng-model="user.phone">
+		</label>
+		<div>
+		<a href="" ng-click="thirdvalidation(user)" class="button  login-button" style="margin-top:10px;">Create</a>
+	</ul>
+	</ion-content>
+  </ion-view>
+</script>
+
+<script id="templates/event-menu.html" type="text/ng-template">
+  <ion-side-menus enable-menu-with-back-views="false">
+	<ion-side-menu-content>
+	  <ion-nav-bar class="header-bar">
+		<ion-nav-back-button>
+		</ion-nav-back-button>
+
+		<ion-nav-buttons side="left">
+		  <button class="button button-icon custom-button ion-navicon" menu-toggle="left">
+		  </button>
+		</ion-nav-buttons>
+	  </ion-nav-bar>
+
+	  <ion-nav-view name="menuContent"></ion-nav-view>
+	</ion-side-menu-content> 
+
+	<ion-side-menu side="left">
+	  <ion-header-bar class="bar-calm">
+		<h1 class="title">Menus</h1>
+	  </ion-header-bar>
+	  <ion-content>
+		<ul class="list">
+		  <!-- Note each link has the 'menu-close' attribute so the menu auto closes when clicking on one of these links -->
+		  <a href="#/event/check-in" class="item item-icon-left" menu-close><i class="icon ion-ios-speedometer-outline"></i>Dashboard</a>
+		  <a href="#/event/menu" class="item item-icon-left" menu-close><i class="icon ion-navicon"></i>Menu</a>
+		  <a href="#/event/cart" class="item item-icon-left" menu-close><i class="icon ion-ios-cart-outline"></i>Cart</a>
+		  <a href="#/event/checkout" class="item item-icon-left" menu-close><i class="icon ion-ios-cart"></i>Checkout</a>
+		  <a href="#/event/lastorder" class="item item-icon-left" menu-close><i class="icon ion-ios-settings"></i>Last orders</a>
+		  <a href="#/event/setting" class="item item-icon-left" menu-close><i class="icon ion-settings"></i>Settings</a>
+		  <a href="#/event/setting" class="item item-icon-left" menu-close><i class="icon ion-ios-person-outline"></i>User</a>
+		  <a href="#/event/about" class="item item-icon-left" menu-close><i class="icon ion-information-circled"></i>About</a>
+		  <a ng-click="logout()" class="item item-icon-left" menu-close><i class="icon ion-log-out"></i>Logout</a>
+		</ul>
+	  </ion-content>
+	</ion-side-menu>
+  </ion-side-menus>
+</script>
+
+<script id="templates/home.html" type="text/ng-template">
+  <ion-view view-title="[ root ]">
+	<ion-content class="padding">
+	  <p>Swipe to the right to reveal the left menu.</p>
+	  <p>(On desktop click and drag from left to right)</p>
+	</ion-content>
+  </ion-view>
+</script>
+
+<script id="templates/check-in.html" type="text/ng-template">
+ <ion-view view-title="Dashboard">
+	<ion-content>
+	
+	<div class="dashbord-slider">
+	
+     <ion-slide-box on-slide-changed="slideChanged(index)" auto-play="true" does-continue="true">
+          <ion-slide>
+            <div id="logo">
+              <img src="images/slider/bg1.jpg" style="height:100%; width:100%;">
+            </div>
+            
+			<p>Awesome 24/7 Food delivery in Indore.</p>
+			
+          </ion-slide>
+          <ion-slide>
+            <div id="logo">
+              <img src="images/slider/bg2.jpg" style="height:100%; width:100%; ">
+            </div>
+            <p>
+              24 Hour Services
+            </p>
+          </ion-slide>
+          <ion-slide>
+            <div id="logo">
+              <img src="images/slider/bg3.jpg" style=" height:100%; width:100%;">
+			</div>
+            <p>
+              Free and Fast <span style="color:#E80000">Deliveries</span>
+            </p>
+          </ion-slide>
+        </ion-slide-box>
+		</div>
+	</ion-content>
+  </ion-view>
+</script>
+
+<script id="templates/menu.html" type="text/ng-template">
+	<ion-view view-title="Menus">
+		<ion-content class="has-header">
+		 
+			<div class="list mrb-none">
+				<a class="item pd-none mr-none" href="#/event/product">
+					<div class="rel-box">
+					<img src="images/poha.jpg"/>		  
+					<div class="abs-box">
+					<span class="txt-left">Poha</span>
+					<span class="txt-right">5</span>
+					</div> 
+					</div>      
+				</a>
+			</div>
+
+		
+			<div class="list mrb-none">
+				<a class="item pd-none mr-none" href="#/event/product">
+					<div class="rel-box">
+					<img src="images/bakery.jpg"/>		  
+					<div class="abs-box">
+					<span class="txt-left">Bakery</span>
+					<span class="txt-right">5</span>
+					</div> 
+					</div>      
+				</a>
+			</div>
+	   
+			<div class="list mrb-none">
+				<a class="item pd-none mr-none" href="#/event/product">
+					<div class="rel-box">
+					<img src="images/namkeen1.jpg"/>		  
+					<div class="abs-box">
+					<span class="txt-left">Namkeen</span>
+					<span class="txt-right">5</span>
+					</div> 
+					</div>      
+				</a>
+			</div>
+	   </ion-content>
+	</ion-view>
+</script>
+
+<script id="templates/product.html" type="text/ng-template">
+<ion-view view-title="Product List">
+	<ion-content class="has-header">
+
+<div class="product-list">		
+
+
+<div class="row">
+
+<div class="col">
+<div class="list card">
+  <div class="item item-body">
+  
+   <div class="relative-box">
+    <img class="full-image" src="images/poha.jpg">	
+	<div class="price-box">$12</div>
+	</div>
+	
+    <h4> Poha </h4>
+    <p>
+   <button class="button button-full button-assertive"> Detail  </button>
+    </p>
+  </div>
+</div>
+</div>	
+
+
+<div class="col">
+<div class="list card">
+  <div class="item item-body">
+    <div class="relative-box">
+    <img class="full-image" src="images/poha.jpg">	
+	<div class="price-box">$12</div>
+	</div>
+    <h4> Poha </h4>
+    <p>
+   <button class="button button-full button-assertive"> Detail  </button>
+    </p>
+  </div>
+</div>
+</div>
+</div>
+
+
+
+
+<div class="row">
+
+<div class="col">
+<div class="list card">
+  <div class="item item-body">
+  
+   <div class="relative-box">
+    <img class="full-image" src="images/poha.jpg">	
+	<div class="price-box">$12</div>
+	</div>
+	
+    <h4> Poha </h4>
+    <p>
+   <button class="button button-full button-assertive"> Detail  </button>
+    </p>
+  </div>
+</div>
+</div>	
+
+
+<div class="col">
+<div class="list card">
+  <div class="item item-body">
+    <div class="relative-box">
+    <img class="full-image" src="images/poha.jpg">	
+	<div class="price-box">$12</div>
+	</div>
+    <h4> Poha </h4>
+    <p>
+   <button class="button button-full button-assertive"> Detail  </button>
+    </p>
+  </div>
+</div>
+</div>
+</div>
+
+
+
+
+
+<div class="row">
+
+<div class="col">
+<div class="list card">
+  <div class="item item-body">
+  
+   <div class="relative-box">
+    <img class="full-image" src="images/poha.jpg">	
+	<div class="price-box">$12</div>
+	</div>
+	
+    <h4> Poha </h4>
+    <p>
+   <button class="button button-full button-assertive"> Detail  </button>
+    </p>
+  </div>
+</div>
+</div>	
+
+
+<div class="col">
+<div class="list card">
+  <div class="item item-body">
+    <div class="relative-box">
+    <img class="full-image" src="images/poha.jpg">	
+	<div class="price-box">$12</div>
+	</div>
+    <h4> Poha </h4>
+    <p>
+   <button class="button button-full button-assertive"> Detail  </button>
+    </p>
+  </div>
+</div>
+</div>
+</div>
+
+ 
+</div>		
+		
+		
+		
+	</ion-content>
+</ion-view>
+</script>
+
+
+<script id="templates/product_detail.html" type="text/ng-template">
+<ion-view view-title="Detail">
+	<ion-content>
+     <ion-slide-box on-slide-changed="slideChanged(index)" auto-play="true" does-continue="true">
+          <ion-slide>
+            <div id="logo">
+              <img src="images/slider/bg1.jpg" style="height:100%; width:100%;">
+            </div>
+            <p>             
+			<span class="left-txt">lorem ipsum dolor sit amet.</span>
+			<span class="right-txt">$12<span/>
+			</p>
+          </ion-slide>
+          <ion-slide>
+            <div id="logo">
+              <img src="images/slider/bg2.jpg" style="height:100%; width:100%; ">
+            </div>
+            <p>             
+			<span class="left-txt">lorem ipsum dolor sit amet.</span>
+			<span class="right-txt">$12<span/>
+			</p>
+          </ion-slide>
+          <ion-slide>
+            <div id="logo">
+              <img src="images/slider/bg3.jpg" style="height:100%; width:100%;">
+			</div>
+           <p>             
+			<span class="left-txt">lorem ipsum dolor sit amet.</span>
+			<span class="right-txt">$12<span/>
+			</p>
+          </ion-slide>
+		  
+        </ion-slide-box>
+		<div class="button-bar">
+		  <a class="button button-assertive">ADD TO FAVORITE</a>
+		  <a class="button button-assertive">ADD TO CART</a>
+		</div>
+		
+		
+		<h3 class="padding">Review (2)</h3>
+		
+		<div class="list">
+
+			<a class="item item-avatar" href="#">
+			  <img src="images/spengler.jpg">
+			  <h2>Venkman</h2>
+			  <p>Back off, man. I'm a scientist.</p>
+			</a>
+
+			<a class="item item-avatar" href="#">
+			  <img src="images/spengler.jpg">
+			  <h2>Venkman</h2>
+			  <p>Back off, man. I'm a scientist.</p>
+			</a>
+
+		</div>
+		
+		
+	</ion-content>
+  </ion-view>
+</script>
+
+<script id="templates/cart.html" type="text/ng-template">
+<ion-view view-title="Cart">
+	<ion-content class="has-header">
+		<div class="padding">
+	
+			<div class="card">
+  
+			   <div class="list">
+
+				<a class="item item-thumbnail-left" href="#">
+				  <img src="images/blue-album.jpg">
+				  <div class="midle-box">
+				  <h2>Pretty Hate Machine</h2>
+				  <p><span class="green-txt">$12.8</span> x2</p>
+				  </div>
+				  <div class="right-sidebox">
+					<button class="button icon ion-plus"></button>
+					<button class="button icon ion-minus"></button>
+				  </div>
+				  
+				</a>
+
+			  </div>
+			</div>
+
+		<div class="card">
+  
+		   <div class="list">
+
+			<a class="item item-thumbnail-left" href="#">
+			  <img src="images/blue-album.jpg">
+			  <div class="midle-box">
+			  <h2>Pretty Hate Machine</h2>
+			  <p><span class="green-txt">$12.8</span> x2</p>
+			  </div>
+			  <div class="right-sidebox">
+				<button class="button icon ion-plus"></button>
+				<button class="button icon ion-minus"></button>
+			  </div>
+			  
+			</a>
+
+		  </div>
+		</div>
+
+		<div class="card">
+  
+		   <div class="list">
+
+			<a class="item item-thumbnail-left" href="#">
+			  <img src="images/blue-album.jpg">
+			  <div class="midle-box">
+			  <h2>Pretty Hate Machine</h2>
+			  <p><span class="green-txt">$12.8</span> x2</p>
+			  </div>
+			  <div class="right-sidebox">
+				<button class="button icon ion-plus"></button>
+				<button class="button icon ion-minus"></button>
+			  </div>
+			  
+			</a>
+
+		  </div>
+		</div>
+
+      
+		<div class="list list-inset card">
+
+			  <div class="item">
+			   <span class="txt-left unbold">Cart Total</span>
+			  <span class="txt-right unbold">$ 22</span>
+			  </div>
+
+			 <div class="item">
+			  <span class="txt-left unbold">App Discount</span>
+			  <span class="txt-right unbold">- $ 2</span>
+			  </div>
+			  
+			  <div class="item graybg">
+			  <span class="txt-left">Order Total</span>
+			  <span class="txt-right">$ 23</span>
+			  </div>
+
+		</div>
+
+       <button class="button button-full button-assertive">
+          Checkout
+       </button>
+      
+	</div>   
+
+	</ion-content>
+</ion-view>
+</script>
+
+
+<script id="templates/checkout.html" type="text/ng-template">
+<ion-view view-title="checkout">
+	<ion-content class="has-header">
+	<div class="address-area">
+	<div class="list">
+	
+	 <div class="row">
+  <div class="col">
+  <label class="item item-input">
+    <input type="text" placeholder="First Name">
+  </label>
+  
+   </div> 
+</div>
+  
+   <div class="row">
+  <div class="col">
+  <label class="item item-input">
+    <input type="text" placeholder="Last Name">
+  </label>
+  
+  </div> 
+</div>
+  
+  
+ <div class="row">
+  <div class="col">
+  <label class="item item-input">
+    <input type="text" placeholder="Address line 1">
+  </label>
+    
+  <label class="item item-input">
+    <input type="text" placeholder="Address line 2">
+  </label>
+ </div> 
+</div> 
+  
+  <div class="row">
+  <div class="col">
+  <label class="item item-input">
+    <input type="text" placeholder="City">
+  </label>
+  </div>
+  <div class="col">
+  <label class="item item-input">
+    <input type="text" placeholder="Zip Code">
+  </label>
+  </div>
+ 
+</div>
+  
+   
+   <div class="row">
+  <div class="col">
+  <label class="item item-input item-select">
+    <div class="input-label">
+      State
+    </div>
+    <select>
+      <option>Madhya Pradesh</option>
+      <option selected>lorem</option>
+      <option>lorem</option>
+    </select>
+  </label>
+ </div> 
+</div>   
+
+
+ <div class="row">
+  <div class="col">  
+  <label class="item item-input item-select">
+    <div class="input-label">
+      Country
+    </div>
+    <select>
+      <option>India</option>
+      <option selected>India</option>
+      <option>India</option>
+    </select>
+  </label>
+ </div> 
+</div> 
+
+<div class="row">
+  <div class="col"> 
+<button class="button button-full button-assertive">
+          Place Order
+       </button> 
+
+ </div> 
+</div> 
+ 
+  
+</div>
+</div>
+	</ion-content>
+</ion-view>
+</script>
+
+<script id="templates/lastorder.html" type="text/ng-template">
+<ion-view view-title="lastorder">
+	<ion-content class="has-header">
+	
+	  <div class="order-history">
+		<div class="list">
+
+			<a class="item"  href="#/event/product_detail">   
+			   <div class="top-block"><h2>Pretty Hate Machine</h2><p class="time-d">1 day ago</p></div>
+			  <p><span class="deliver-txt">Delivered </span></p>    
+			  
+			</a>
+		  </div>
+		  
+		  <div class="list">
+
+			<a class="item"  href="#/event/product_detail">   
+			  <div class="top-block"><h2>Pretty Hate Machine</h2><p class="time-d">1 day ago</p></div>
+			  <p><span class="deliver-txt">Delivered </span></p>  
+			    
+			  
+			</a>
+		  </div>
+		  
+		  <div class="list">
+
+			<a class="item"  href="#/event/product_detail">   
+			   <div class="top-block"><h2>Pretty Hate Machine</h2><p class="time-d">1 day ago</p></div>
+			  <p><span class="process-txt">Processing</span></p>    
+			  
+			</a>
+		  </div>
+		  
+		  <div class="list">
+
+			<a class="item"  href="#/event/product_detail">   
+			  <div class="top-block"><h2>Pretty Hate Machine</h2><p class="time-d">2m ago</p></div>
+			  <p><span class="cancel-txt">Canceled</span></p>    
+			  
+			</a>
+		  </div>
+		  
+		  
+		  </div>
+	</ion-content>
+</ion-view>
+</script>
+
+<script id="templates/about.html" type="text/ng-template">
+<ion-view view-title="About">
+	<ion-content class="has-header">
+		 <div class="tabs-striped tabs-top tabs-background-positive tabs-color-light">
+    <div class="tabs">
+      <a class="tab-item active" href="#">
+        <i class="icon ion-home"></i>
+        Test
+      </a>
+      <a class="tab-item" href="#">
+        <i class="icon ion-star"></i>
+        Favorites
+      </a>
+      <a class="tab-item" href="#">
+        <i class="icon ion-gear-a"></i>
+        Settings
+      </a>
+    </div>
+  </div>
+	</ion-content>
+</ion-view>
+</script>
+
+<script id="fancy-select-items.html" type="text/ng-template">
+	<ion-view class="fancy-select-items modal">
+	  <ion-header-bar class="bar-positive">
+	
+		<button ng-click="hideItems()" class="button button-positive button-icon ion-ios-arrow-back"></button>
+	
+		<h1 class="title">{{headerText}}</h1>
+	
+		<button ng-click="validate()" class="button button-positive button-icon ion-checkmark"></button>
+	
+	  </ion-header-bar>
+	  <ion-content>
+		<div class="list">
+		  <!-- Multi select -->
+		  <ion-checkbox ng-repeat="item in items" ng-if="multiSelect" ng-checked="item.checked" ng-model="item.checked" class="item item-text-wrap">
+			{{item.text}}
+		  </ion-checkbox>
+		</div>
+	  </ion-content>
+	</ion-view>
+</script>
+    
+
+<script id="templates/setting.html" type="text/ng-template">
+<ion-view view-title="Settings">
+	<ion-content class="has-header">
+		<ul class="list">
+			<li class="item item-toggle">
+			 Get Notifications
+			 <label class="toggle toggle-calm">
+			   <input type="checkbox" checked="checked">
+			   <div class="track">
+				 <div class="handle"></div>
+			   </div>
+			 </label>
+		  	</li>
+			<li><a href="#/event/changepassword" class="item item-icon-right">Change Password</a></li>
+		</ul>
+	</ion-content>
+</ion-view>
+</script>
+
+<script id="templates/changepassword.html" type="text/ng-template">
+<ion-view view-title="Change Password">
+	<ion-content class="has-header">
+		<ul class="list">
+			<label class="item item-input item-floating-label">
+				<span class="input-label" style="font-size:14px;">Old Password</span>
+				<input type="password" placeholder="Old Password" ng-model="user.opassword">
+			</label>
+			<label class="item item-input item-floating-label">
+				<span class="input-label" style="font-size:14px;">New Password</span>
+				<input type="password" placeholder="New Password" ng-model="user.npassword">
+			</label>
+			<label class="item item-input item-floating-label">
+				<span class="input-label" style="font-size:14px;">Confirm Password</span>
+				<input type="password" placeholder="Confirm Password" ng-model="user.cpassword">
+			</label>
+			<div>
+			<button class="button button-block login-button" ng-click="changepassword(user)">
+				Save Changes
+			</button>
+			</div>
+		</ul>
+	</ion-content>
+</ion-view>
+</script>
+
+<div class="bar bar-footer footer-bar" style="height:15px;">
+  		<!--<div class="title">My Program</div>-->
+</div>
+<script src="js/app.js"></script>
+<script src="js/controller.js"></script>
+<body>
+</html>
